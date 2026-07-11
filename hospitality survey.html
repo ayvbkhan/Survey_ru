@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Опрос: Hospitality Management</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --ink:#0f2b28;
+    --brass:#b08945;
+    --brass-light:#d9b877;
+    --ivory:#f6f2ea;
+    --panel:#ffffff;
+    --line:rgba(15,43,40,0.14);
+    --green-deep:#0f2b28;
+    --green-mid:#183f3a;
+    --error:#a5432f;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--ivory);
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:0;
+  }
+
+  .stage{
+    width:100%;
+    min-height:100vh;
+    background:
+      radial-gradient(1200px 500px at 50% -10%, rgba(176,137,69,0.10), transparent),
+      var(--ivory);
+    display:flex;
+    justify-content:center;
+  }
+
+  .card{
+    width:100%;
+    max-width:640px;
+    margin:0 auto;
+    padding:0 20px 60px;
+  }
+
+  header.topbar{
+    padding:28px 0 18px;
+    position:sticky;
+    top:0;
+    background:linear-gradient(var(--ivory) 82%, transparent);
+    z-index:5;
+  }
+
+  .brand{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    margin-bottom:16px;
+  }
+  .brand .mark{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:15px;
+    letter-spacing:0.02em;
+    color:var(--green-deep);
+  }
+  .brand .divider{
+    width:1px;height:14px;background:var(--line);
+  }
+  .brand .sub{
+    font-size:12px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--brass);
+    font-weight:600;
+  }
+
+  .track{
+    height:3px;
+    width:100%;
+    background:rgba(15,43,40,0.10);
+    border-radius:2px;
+    overflow:hidden;
+  }
+  .track .fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg, var(--brass), var(--brass-light));
+    transition:width .45s cubic-bezier(.65,0,.35,1);
+  }
+  .step-label{
+    margin-top:8px;
+    font-size:11.5px;
+    color:var(--green-mid);
+    opacity:0.65;
+    letter-spacing:0.03em;
+  }
+
+  main.screen{
+    animation:rise .5s cubic-bezier(.2,.8,.2,1);
+  }
+  @keyframes rise{
+    from{opacity:0; transform:translateY(14px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  .eyebrow{
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--brass);
+    margin:0 0 10px;
+  }
+
+  h1.qtitle{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:26px;
+    line-height:1.28;
+    margin:0 0 8px;
+    color:var(--green-deep);
+  }
+  p.qhint{
+    font-size:14px;
+    color:var(--green-mid);
+    opacity:0.75;
+    margin:0 0 26px;
+    line-height:1.5;
+  }
+
+  .intro-mark{
+    font-family:'Fraunces',serif;
+    font-size:44px;
+    line-height:1.15;
+    color:var(--green-deep);
+    margin:6px 0 14px;
+  }
+  .intro-body{
+    font-size:15.5px;
+    line-height:1.65;
+    color:var(--green-mid);
+    max-width:52ch;
+  }
+  .intro-meta{
+    margin-top:26px;
+    display:flex;
+    gap:22px;
+    flex-wrap:wrap;
+  }
+  .intro-meta .stat{
+    border-left:2px solid var(--brass);
+    padding-left:10px;
+  }
+  .intro-meta .stat b{
+    display:block;
+    font-family:'Fraunces',serif;
+    font-size:18px;
+    color:var(--green-deep);
+  }
+  .intro-meta .stat span{
+    font-size:11.5px;
+    color:var(--green-mid);
+    opacity:0.7;
+  }
+
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-bottom:8px;
+  }
+
+  .opt{
+    position:relative;
+    border:1.5px solid var(--line);
+    background:var(--panel);
+    border-radius:10px;
+    padding:15px 16px;
+    font-size:15px;
+    color:var(--ink);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    transition:border-color .18s ease, background .18s ease, transform .12s ease;
+    text-align:left;
+  }
+  .opt:hover{border-color:var(--brass-light); transform:translateY(-1px);}
+  .opt .box{
+    width:19px;height:19px;
+    border-radius:50%;
+    border:1.5px solid var(--line);
+    flex:none;
+    display:flex;align-items:center;justify-content:center;
+    transition:all .15s ease;
+  }
+  .opt.checkbox .box{border-radius:5px;}
+  .opt .box .dot{
+    width:9px;height:9px;border-radius:50%;
+    background:var(--brass);
+    opacity:0;
+    transform:scale(0.4);
+    transition:all .15s ease;
+  }
+  .opt.checkbox .box .dot{
+    width:100%;height:100%;border-radius:4px;
+    background:var(--brass);
+  }
+  .opt.selected{
+    border-color:var(--brass);
+    background:rgba(176,137,69,0.07);
+  }
+  .opt.selected .box{border-color:var(--brass);}
+  .opt.selected .box .dot{opacity:1; transform:scale(1);}
+
+  textarea.freeform, input.freeform{
+    width:100%;
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    font-family:'Inter',sans-serif;
+    font-size:15px;
+    color:var(--ink);
+    background:var(--panel);
+    resize:vertical;
+    min-height:46px;
+  }
+  input.freeform{min-height:auto;}
+  textarea.freeform:focus, input.freeform:focus{
+    outline:none;
+    border-color:var(--brass);
+  }
+
+  .scale-row{
+    display:flex;
+    gap:6px;
+    margin-top:6px;
+  }
+  .scale-cell{
+    flex:1;
+    text-align:center;
+    padding:12px 0;
+    border:1.5px solid var(--line);
+    border-radius:8px;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:600;
+    color:var(--green-mid);
+    background:var(--panel);
+    transition:all .15s ease;
+  }
+  .scale-cell:hover{border-color:var(--brass-light);}
+  .scale-cell.selected{
+    background:var(--green-deep);
+    border-color:var(--green-deep);
+    color:var(--ivory);
+  }
+  .scale-labels{
+    display:flex;justify-content:space-between;
+    font-size:11.5px;color:var(--green-mid);opacity:0.65;
+    margin-top:6px;
+  }
+
+  .nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:30px;
+  }
+  .btn{
+    border:none;
+    border-radius:9px;
+    padding:13px 22px;
+    font-family:'Inter',sans-serif;
+    font-size:14.5px;
+    font-weight:600;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .btn-primary{
+    background:var(--green-deep);
+    color:var(--ivory);
+  }
+  .btn-primary:hover{background:var(--green-mid);}
+  .btn-primary:disabled{background:#c9c2b3; cursor:not-allowed;}
+  .btn-ghost{
+    background:transparent;
+    color:var(--green-mid);
+    padding:13px 8px;
+  }
+  .btn-ghost:hover{color:var(--ink);}
+
+  .required-note{
+    font-size:12px; color:var(--error); margin-top:10px; min-height:16px;
+  }
+
+  .thanks-icon{
+    width:52px;height:52px;
+    border-radius:50%;
+    background:var(--green-deep);
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:20px;
+  }
+  .thanks-icon svg{width:22px;height:22px;}
+
+  footer.foot{
+    margin-top:40px;
+    padding-top:16px;
+    border-top:1px solid var(--line);
+    font-size:11.5px;
+    color:var(--green-mid);
+    opacity:0.55;
+  }
+
+  @media (max-width:480px){
+    h1.qtitle{font-size:22px;}
+    .intro-mark{font-size:34px;}
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="card">
+    <header class="topbar">
+      <div class="brand">
+        <span class="mark">CEDU Academy</span>
+        <div class="divider"></div>
+        <span class="sub">Hospitality Management · Исследование спроса</span>
+      </div>
+      <div class="track"><div class="fill" id="progressFill"></div></div>
+      <div class="step-label" id="stepLabel"></div>
+    </header>
+    <main class="screen" id="screenRoot"></main>
+    <footer class="foot">Опрос анонимный. Ответы используются только для развития программы CEDU Academy.</footer>
+  </div>
+</div>
+
+<script>
+/* ---------------- SCREEN DEFINITIONS ---------------- */
+// types: 'intro' | 'single' | 'multi' | 'text' | 'scale' | 'thanks'
+const screens = [
+  { id:'intro', type:'intro' },
+
+  { id:'age', type:'single', eyebrow:'Фильтр', title:'Ваш возраст', key:'age', required:true,
+    options:['до 18 лет','18–22','23–29','30–39','40 лет и старше'] },
+
+  { id:'education', type:'single', eyebrow:'Фильтр', title:'Уровень образования на данный момент', key:'education', required:true,
+    options:['Среднее школьное','Среднее специальное / колледж','Незаконченное высшее','Высшее','Другое'] },
+
+  { id:'city', type:'single', eyebrow:'Фильтр', title:'Ваш город проживания', key:'city', required:true,
+    options:['Ташкент','Другой город Узбекистана','За пределами Узбекистана'] },
+
+  { id:'status', type:'single', eyebrow:'Фильтр', title:'Ваш текущий статус', key:'status', required:true,
+    options:[
+      'Работаю в отеле / гостиничном бизнесе',
+      'Студент / учусь в вузе или колледже',
+      'Работаю в другой сфере, но интересуюсь хоспиталити',
+      'Не работаю, ищу работу',
+      'Другое'
+    ],
+    branch:(val)=> val==='Работаю в отеле / гостиничном бизнесе' ? 'hotel' : 'general'
+  },
+
+  // ---- HOTEL BRANCH ----
+  { id:'position', type:'single', branchTag:'hotel', eyebrow:'О вашей работе', title:'Укажите вашу должность', key:'position',
+    options:['Ресепшн / Front Office','Housekeeping (обслуживание номеров)','F&B (ресторан, бар, банкеты)','Отдел продаж / бронирования / Revenue Management','Административный / управляющий персонал','Другое'] },
+
+  { id:'experience', type:'single', branchTag:'hotel', eyebrow:'О вашей работе', title:'Сколько лет вы работаете в индустрии гостеприимства?', key:'experience',
+    options:['Менее 1 года','1–3 года','3–5 лет','Более 5 лет'] },
+
+  { id:'hotelName', type:'text', branchTag:'hotel', eyebrow:'О вашей работе', hint:'Можно не указывать', title:'Название отеля / гостиничной сети', key:'hotelName', required:false, placeholder:'Например, Hyatt Regency Tashkent' },
+
+  { id:'relevance', type:'single', branchTag:'hotel', eyebrow:'Интерес к обучению', title:'Насколько для вас актуально повышение квалификации в сфере гостеприимства сейчас?', key:'relevance',
+    options:['Совсем не актуально','Скорее не актуально','Затрудняюсь ответить','Скорее актуально','Очень актуально'] },
+
+  { id:'topicsHotel', type:'multi', branchTag:'hotel', eyebrow:'Интерес к обучению', title:'Какие темы были бы для вас наиболее полезны?', hint:'Можно выбрать несколько', key:'topicsHotel',
+    options:['Управление номерным фондом / Front Office','Управление F&B (рестораны, бары)','Финансы и контроль затрат в отеле','Revenue Management','HR и управление персоналом в отеле','Работа с гостями и сервис','Технологии в отеле (PMS, POS-системы)','Другое'] },
+
+  { id:'careerHelp', type:'single', branchTag:'hotel', eyebrow:'Ценность программы', title:'Помогло бы прохождение такой программы вашему карьерному росту?', key:'careerHelp',
+    options:['Да, точно поможет','Скорее да','Затрудняюсь ответить','Скорее нет','Нет'] },
+
+  { id:'payWillHotel', type:'single', branchTag:'hotel', eyebrow:'Готовность платить', title:'Готовы ли вы лично оплатить обучение по такой программе?', key:'payWillHotel',
+    options:['Да, готов(а) оплатить полностью сам(а)','Готов(а) оплатить частично, если часть покроет работодатель','Готов(а) пройти, только если полностью оплатит работодатель','Не готов(а) платить ни при каком условии'] },
+
+  { id:'priceHotel', type:'single', branchTag:'hotel', eyebrow:'Готовность платить', title:'Какая сумма за полный курс (120 часов, международный сертификат) кажется вам приемлемой?', key:'priceHotel',
+    options:['До 1 500 000 сум','1 500 000 – 3 000 000 сум','3 000 000 – 5 000 000 сум','Свыше 5 000 000 сум','Готов(а) платить, только если сумму назовёт работодатель'] },
+
+  { id:'employerSupport', type:'single', branchTag:'hotel', eyebrow:'Работодатель', title:'Как вы думаете, поддержит ли ваш отель/работодатель обучение сотрудников по такой программе?', key:'employerSupport',
+    options:['Да, у нас есть бюджет на обучение персонала','Возможно, если программа докажет ценность','Скорее нет','Точно нет','Не знаю'] },
+
+  { id:'barriersHotel', type:'multi', branchTag:'hotel', eyebrow:'Барьеры', title:'Что могло бы вас остановить от прохождения такой программы?', hint:'Можно выбрать несколько', key:'barriersHotel',
+    options:['Стоимость','Нехватка времени / график работы','Сомнения в ценности сертификата на рынке труда','Формат обучения (очно/онлайн) не подходит','Недостаточно информации о программе','Другое'] },
+
+  { id:'formatHotel', type:'single', branchTag:'hotel', eyebrow:'Формат', title:'В каком формате вам было бы удобнее всего учиться?', key:'formatHotel',
+    options:['Полностью очно','Полностью онлайн','Гибридный формат (часть очно, часть онлайн)','По вечерам / выходным (без отрыва от работы)'],
+    next:'nps' },
+
+  // ---- GENERAL / STUDENT BRANCH ----
+  { id:'careerConsider', type:'single', branchTag:'general', eyebrow:'О карьерных планах', title:'Рассматриваете ли вы карьеру в сфере гостеприимства (отели, рестораны, туризм)?', key:'careerConsider',
+    options:['Да, это моя основная цель','Рассматриваю как один из вариантов','Не рассматривал(а), но интересно узнать больше','Не интересует'] },
+
+  { id:'awareness', type:'single', branchTag:'general', eyebrow:'Осведомлённость', title:'Слышали ли вы раньше о программах Hospitality Management с международной сертификацией (Pearson и др.)?', key:'awareness',
+    options:['Да, хорошо знаком(а) с темой','Что-то слышал(а)','Впервые слышу'] },
+
+  { id:'interestGeneral', type:'single', branchTag:'general', eyebrow:'Интерес', title:'Насколько вам интересна такая программа обучения?', key:'interestGeneral',
+    options:['Совсем не интересна','Скорее не интересна','Затрудняюсь ответить','Скорее интересна','Очень интересна'] },
+
+  { id:'priorities', type:'multi', branchTag:'general', eyebrow:'Приоритеты', title:'Что для вас важнее всего при выборе образовательной программы?', hint:'Выберите до 3 вариантов', key:'priorities', maxSelect:3,
+    options:['Международный сертификат/аккредитация','Гарантия стажировки или трудоустройства','Стоимость обучения','Известность и репутация учебного заведения','Преподаватели с реальным опытом в индустрии','Длительность программы','Возможность учиться без отрыва от школы/вуза/работы'] },
+
+  { id:'decisionMaker', type:'single', branchTag:'general', eyebrow:'Решение об оплате', title:'Кто будет принимать решение об оплате обучения?', key:'decisionMaker',
+    options:['Я сам(а)','Родители / семья','Совместно со мной и семьёй','Работодатель (если уже работаю)'] },
+
+  { id:'priceGeneral', type:'single', branchTag:'general', eyebrow:'Готовность платить', title:'Какая стоимость программы (120 часов, международный сертификат) кажется вам оправданной?', key:'priceGeneral',
+    options:['До 1 500 000 сум','1 500 000 – 3 000 000 сум','3 000 000 – 5 000 000 сум','Свыше 5 000 000 сум','Затрудняюсь оценить'] },
+
+  { id:'barriersGeneral', type:'multi', branchTag:'general', eyebrow:'Барьеры', title:'Что могло бы остановить вас от записи на такую программу?', hint:'Можно выбрать несколько', key:'barriersGeneral',
+    options:['Стоимость','Сомнения в ценности сертификата на рынке труда','Отсутствие гарантии стажировки/трудоустройства','Нехватка времени','Недостаточно информации о программе','Другое'],
+    next:'nps' },
+
+  // ---- COMMON TAIL ----
+  { id:'nps', type:'scale', eyebrow:'Общее мнение', title:'Насколько вероятно, что вы порекомендуете такую программу знакомым/коллегам?', key:'nps', scaleMin:0, scaleMax:10, scaleLabels:['Точно не порекомендую','Точно порекомендую'] },
+
+  { id:'convince', type:'multi', eyebrow:'Общее мнение', title:'Что убедило бы вас с наибольшей вероятностью записаться на программу?', hint:'Выберите до 2 вариантов', key:'convince', maxSelect:2,
+    options:['Гарантированная стажировка в известном отеле','Отзывы и истории успеха выпускников','Пробное бесплатное занятие','Рассрочка платежа','Скидка при ранней записи','Личная встреча / консультация с представителем академии'] },
+
+  { id:'channels', type:'multi', eyebrow:'Общее мнение', title:'Через какие каналы вам было бы удобно узнавать о таких программах?', hint:'Можно выбрать несколько', key:'channels',
+    options:['Instagram / Telegram','Сайт учебного заведения','Рекомендации знакомых','От работодателя','Наружная реклама','Другое'] },
+
+  { id:'contactName', type:'text', eyebrow:'Необязательно', title:'Оставьте контакт, если хотите получить больше информации о программе', hint:'Поле необязательное — можно пропустить', key:'contactInfo', required:false, placeholder:'Имя и Telegram / телефон' },
+
+  { id:'thanks', type:'thanks' }
+];
+
+/* ---------------- STATE ---------------- */
+let order = [];       // resolved linear order of screen ids for this session
+let idx = 0;
+let answers = {};
+let multiTemp = {};
+
+function buildOrder(){
+  // static prefix up to and including 'status'
+  const prefixIds = ['intro','age','education','city','status'];
+  order = [...prefixIds];
+}
+buildOrder();
+
+function getScreen(id){ return screens.find(s=>s.id===id); }
+
+function goNext(){
+  const cur = getScreen(order[idx]);
+  // resolve branch after status question
+  if(cur.id === 'status'){
+    const branch = cur.branch(answers.status);
+    const branchIds = screens.filter(s=>s.branchTag===branch).map(s=>s.id);
+    order = order.concat(branchIds, ['nps','convince','channels','contactName','thanks']);
+  }
+  if(idx < order.length-1){
+    idx++;
+    render();
+  }
+}
+function goBack(){
+  if(idx>0){ idx--; render(); }
+}
+
+/* ---------------- STORAGE ---------------- */
+async function saveResponse(){
+  try{
+    const key = 'response:' + Date.now() + ':' + Math.random().toString(36).slice(2,8);
+    await window.storage.set(key, JSON.stringify({ ts:new Date().toISOString(), answers }), true);
+  }catch(e){ console.error('storage error', e); }
+}
+
+/* ---------------- RENDER ---------------- */
+const root = document.getElementById('screenRoot');
+const fill = document.getElementById('progressFill');
+const stepLabel = document.getElementById('stepLabel');
+
+function render(){
+  const s = getScreen(order[idx]);
+  const pct = Math.round((idx/(order.length-1))*100);
+  fill.style.width = pct + '%';
+  stepLabel.textContent = s.type==='intro' ? 'Начало' : (s.type==='thanks' ? 'Готово' : `Шаг ${idx} из ${order.length-2}`);
+
+  if(s.type==='intro') return renderIntro(s);
+  if(s.type==='thanks') return renderThanks(s);
+  if(s.type==='single') return renderSingle(s);
+  if(s.type==='multi') return renderMulti(s);
+  if(s.type==='text') return renderText(s);
+  if(s.type==='scale') return renderScale(s);
+}
+
+function shell(inner, navHtml){
+  root.innerHTML = `<div>${inner}</div><div class="nav">${navHtml}</div>`;
+}
+
+function renderIntro(){
+  root.innerHTML = `
+    <div class="intro-mark">Ваше мнение<br>формирует программу.</div>
+    <p class="intro-body">Мы изучаем интерес к образовательной программе Hospitality Management в Ташкенте. Опрос займёт 5–7 минут, ответы анонимны и будут использованы только для улучшения программы.</p>
+    <div class="intro-meta">
+      <div class="stat"><b>5–7 мин</b><span>время прохождения</span></div>
+      <div class="stat"><b>100%</b><span>анонимно</span></div>
+      <div class="stat"><b>~25</b><span>вопросов, с учётом ветвления</span></div>
+    </div>
+    <div class="nav">
+      <span></span>
+      <button class="btn btn-primary" onclick="goNext()">Начать опрос</button>
+    </div>`;
+}
+
+function renderThanks(){
+  saveResponse();
+  root.innerHTML = `
+    <div class="thanks-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#f6f2ea" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <h1 class="qtitle">Спасибо за ваши ответы</h1>
+    <p class="qhint">Ваш вклад поможет CEDU Academy сделать программу Hospitality Management точнее и полезнее для рынка Ташкента. Можно закрыть эту страницу.</p>`;
+}
+
+function renderSingle(s){
+  const selected = answers[s.key];
+  const opts = s.options.map(o=>`
+    <div class="opt ${selected===o?'selected':''}" onclick="selectSingle('${s.key}','${escapeAttr(o)}')">
+      <span class="box"><span class="dot"></span></span>
+      <span>${o}</span>
+    </div>`).join('');
+  shell(`
+    <p class="eyebrow">${s.eyebrow||''}</p>
+    <h1 class="qtitle">${s.title}${s.required===false?' <span style="opacity:.4;font-weight:400;font-size:15px;">(необязательно)</span>':''}</h1>
+    ${s.hint?`<p class="qhint">${s.hint}</p>`:''}
+    <div class="options">${opts}</div>
+    <div class="required-note" id="reqNote"></div>
+  `, navButtons(s));
+}
+
+function selectSingle(key, val){
+  answers[key] = val;
+  render();
+}
+
+function renderMulti(s){
+  if(!answers[s.key]) answers[s.key] = [];
+  const selectedArr = answers[s.key];
+  const opts = s.options.map(o=>`
+    <div class="opt checkbox ${selectedArr.includes(o)?'selected':''}" onclick="toggleMulti('${s.key}','${escapeAttr(o)}', ${s.maxSelect||0})">
+      <span class="box"><span class="dot"></span></span>
+      <span>${o}</span>
+    </div>`).join('');
+  shell(`
+    <p class="eyebrow">${s.eyebrow||''}</p>
+    <h1 class="qtitle">${s.title}</h1>
+    <p class="qhint">${s.hint||'Можно выбрать несколько вариантов'}</p>
+    <div class="options">${opts}</div>
+    <div class="required-note" id="reqNote"></div>
+  `, navButtons(s));
+}
+
+function toggleMulti(key, val, maxSelect){
+  const arr = answers[key];
+  const i = arr.indexOf(val);
+  if(i>=0){ arr.splice(i,1); }
+  else{
+    if(maxSelect && arr.length>=maxSelect){
+      document.getElementById('reqNote').textContent = `Можно выбрать не больше ${maxSelect}`;
+      return;
+    }
+    arr.push(val);
+  }
+  render();
+}
+
+function renderText(s){
+  const val = answers[s.key] || '';
+  shell(`
+    <p class="eyebrow">${s.eyebrow||''}</p>
+    <h1 class="qtitle">${s.title}${s.required===false?' <span style="opacity:.4;font-weight:400;font-size:15px;">(необязательно)</span>':''}</h1>
+    ${s.hint?`<p class="qhint">${s.hint}</p>`:''}
+    <input class="freeform" id="textInput" type="text" placeholder="${s.placeholder||''}" value="${escapeAttr(val)}" oninput="answers['${s.key}']=this.value" />
+    <div class="required-note" id="reqNote"></div>
+  `, navButtons(s));
+}
+
+function renderScale(s){
+  const val = answers[s.key];
+  const cells = [];
+  for(let i=s.scaleMin;i<=s.scaleMax;i++){
+    cells.push(`<div class="scale-cell ${val===i?'selected':''}" onclick="selectScale('${s.key}',${i})">${i}</div>`);
+  }
+  shell(`
+    <p class="eyebrow">${s.eyebrow||''}</p>
+    <h1 class="qtitle">${s.title}</h1>
+    <div class="scale-row">${cells.join('')}</div>
+    <div class="scale-labels"><span>${s.scaleLabels[0]}</span><span>${s.scaleLabels[1]}</span></div>
+    <div class="required-note" id="reqNote"></div>
+  `, navButtons(s));
+}
+function selectScale(key,val){ answers[key]=val; render(); }
+
+function navButtons(s){
+  const backBtn = idx>1 ? `<button class="btn btn-ghost" onclick="goBack()">Назад</button>` : `<span></span>`;
+  return `${backBtn}<button class="btn btn-primary" onclick="attemptNext('${s.id}')">Далее</button>`;
+}
+
+function attemptNext(id){
+  const s = getScreen(id);
+  const required = s.required !== false;
+  let valid = true;
+  if(required){
+    if(s.type==='single' && !answers[s.key]) valid=false;
+    if(s.type==='multi' && (!answers[s.key] || answers[s.key].length===0)) valid=false;
+    if(s.type==='text' && (!answers[s.key] || !answers[s.key].trim())) valid=false;
+    if(s.type==='scale' && answers[s.key]===undefined) valid=false;
+  }
+  if(!valid){
+    document.getElementById('reqNote').textContent = 'Пожалуйста, выберите вариант ответа, чтобы продолжить';
+    return;
+  }
+  goNext();
+}
+
+function escapeAttr(str){
+  return String(str).replace(/'/g,"\\'").replace(/"/g,'&quot;');
+}
+
+render();
+</script>
+</body>
+</html>
