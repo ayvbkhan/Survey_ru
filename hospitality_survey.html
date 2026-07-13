@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -472,10 +473,25 @@ function goBack(){
 }
 
 /* ---------------- STORAGE ---------------- */
+const SHEETS_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbzHz35TIGgwHFcNE2mJ3VYWQopS0IDldcftvIdhtG8MjWOjDHuttp0JehCPVxknlsku9w/exec';
+
 async function saveResponse(){
+  const payload = { ts:new Date().toISOString(), answers };
+
+  // 1) Send to Google Sheets
+  try{
+    await fetch(SHEETS_WEBHOOK_URL, {
+      method:'POST',
+      mode:'no-cors', // Apps Script web apps don't return CORS headers; we can't read the response, but the write still happens
+      headers:{ 'Content-Type':'text/plain' },
+      body: JSON.stringify(payload)
+    });
+  }catch(e){ console.error('sheets webhook error', e); }
+
+  // 2) Also keep a local backup copy in artifact storage
   try{
     const key = 'response:' + Date.now() + ':' + Math.random().toString(36).slice(2,8);
-    await window.storage.set(key, JSON.stringify({ ts:new Date().toISOString(), answers }), true);
+    await window.storage.set(key, JSON.stringify(payload), true);
   }catch(e){ console.error('storage error', e); }
 }
 
